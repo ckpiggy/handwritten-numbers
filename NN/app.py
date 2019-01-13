@@ -10,10 +10,9 @@ import argparse
 def main() :
   args = process_args()
   model = load_model()
-  invert = False
-  if args.invert.lower() in ("true", "yes", "y"):
-    invert = True
-  img = load_image(args.img_path, invert)
+  invert = args.invert.lower() in ("true", "yes", "y")
+  disp = args.disp.lower in ("true", "yes", "y")
+  img = load_image(args.img_path, invert, disp)
   predict(model, img)
 
 def process_args():
@@ -23,6 +22,8 @@ def process_args():
   parser.add_argument("--img-path", type=str, help="image path", default=default_img_path)
   parser.add_argument("--invert", default="False", metavar="I",
     help="to invert image color or not, default is \"False\", set \"True\" to invert the color.")
+  parser.add_argument("--disp", default="False", metavar="D",
+    help='to display image or not, default is "False", set "True" to display the image.') 
   return parser.parse_args()
 
 def load_model():
@@ -32,12 +33,13 @@ def load_model():
   model.load_state_dict(torch.load(model_path))
   return model
 
-def load_image(path, invert=False):
+def load_image(path, invert=False, disp=False):
   with Image.open(path).convert('L') as img:
     if invert:
       img = ImageOps.invert(img)
-    plt.imshow(img)
-    plt.show()
+    if disp:
+      plt.imshow(img)
+      plt.show()
     transform = torchvision.transforms.Compose([
       torchvision.transforms.Resize((28, 28)),
       torchvision.transforms.ToTensor(),
@@ -45,9 +47,10 @@ def load_image(path, invert=False):
     ])
     trans = transform(img)
     res = trans.unsqueeze(0)
-    disp = torchvision.transforms.ToPILImage()(trans)
-    plt.imshow(disp)
-    plt.show()
+    disp_img = torchvision.transforms.ToPILImage()(trans)
+    if disp:
+      plt.imshow(disp_img)
+      plt.show()
     return res
 
 def predict(model, img):
