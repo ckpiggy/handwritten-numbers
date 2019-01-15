@@ -42,7 +42,7 @@ It will load the image in assets folder, display the image during process and in
 > python3 app.py -p=./assets/testcat.png -d=True
 hmm... I don't think that is a digit
 ```
-It will complain the you feed something strange 😎
+It will complain when you feed something strange 😎
 
 **Howerver the model works poor when the background is lighter than foreground!**
 
