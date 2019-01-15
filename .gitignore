@@ -1,2 +1,3 @@
-/NN/assets/
-/NN/data/
+
+/Model/data/
+*/__pycache__
